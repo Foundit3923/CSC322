@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <unistd.h>
-#include <math.h>
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
@@ -46,10 +45,10 @@ void move(int direction, int currentCreature, int type);
 void updateCreatures(int num_creatures, int i){
   printf("UC: Init current creatures\n");
   /*Initialize currentCreatures*/
-  rooms[i]->currentCreatures = (long*) malloc(sizeof(long) * 10);
+  rooms[i]->currentCreatures = (long*) malloc(sizeof(long));
   printf("UC: Declare creature count\n");
   /*Assign creature count*/
-  int creatureCount;
+  int creatureCount = 0;
   for(int j = 0; j < num_creatures; j++){
     printf("UC: for loop\n");
     if(creatures[i]->room == i){
@@ -161,7 +160,7 @@ void init(){
     printf("Store room info\n");
     /*Store room information in rooms*/
     for(int i = 0; i < num_rooms; i++){
-      printf("Init creatures[i]\n");
+      printf("Init rooms[i]\n");
       /*Initialize creatures[i]*/
       rooms[i] = (room*) malloc(sizeof(creature*));
       printf("Assign room number\n");
@@ -225,7 +224,7 @@ void init(){
 
 int findNeighbor(int type){
 /*Declare variable to hold room number of neighbor, called 'neighbor'*/
-int neighbor;
+int neighbor = 0;
 
 int cleanCount = 0;
 
@@ -886,9 +885,11 @@ void play(){
   char *beginningInput;
   char *commandString = (char*) malloc(sizeof(char));
   char number[10];
-  int creatureNumber;
-  int creatureType;
-  long command;
+  int creatureNumber = 0;
+  int pcNumber = -1;
+  int pcType = -1;
+  int creatureType = 0;
+  long command = 0;
 
 /*Take input and do instructions*/
 /*Check if input is about a creature*/
@@ -942,7 +943,7 @@ void play(){
       /*Convert command into number, pass to switch and execute command*/
 
       command = getCommandNumber(commandString);
-      executeCommand(creatureType, command, currentRoom);
+      executeCommand(creatureNumber, creatureType, command);
 
       /*Update creatures in currentRoom*/
       updateCreatures(creatures[0]->maxCreature, currentRoom);
@@ -950,7 +951,10 @@ void play(){
 
     /*If input is not about creature*/
     else{
+      command = getCommandNumber(input);
+      executeCommand(pcNumber, pcType, command);
 
+      updateCreatures(creatures[0]->maxCreature, currentRoom);
     }
   }
 }
