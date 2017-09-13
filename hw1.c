@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
@@ -42,26 +41,30 @@ void move(int direction, int currentCreature, int type);
 
 /*---------------------------------------------------------------------*/
 
-void updateCreatures(int num_creatures, int i){
-  printf("UC: Init current creatures\n");
-  /*Initialize currentCreatures*/
-  rooms[i]->currentCreatures = (long*) malloc(sizeof(long));
-  printf("UC: Declare creature count\n");
-  /*Assign creature count*/
-  int creatureCount = 0;
-  for(int j = 0; j < num_creatures; j++){
-    printf("UC: for loop\n");
-    if(creatures[i]->room == i){
-      /*Fill current Creatures*/
-      for(int k = 0; k < 10; k++){
-        printf("UC: Init current creatures[i]\n");
-      rooms[i]->currentCreatures[k] = (long) malloc(sizeof(long));
-      printf("UC: Assign current creatures[i]\n");
-      rooms[i]->currentCreatures[k] = creatures[j]->room;
+void updateCreatures(int num_creatures, int i) {
+    printf("UC: Init current creatures\n");
+    /*Initialize currentCreatures*/
+    rooms[ i ]->currentCreatures = (long *) malloc(sizeof(long));
+    printf("UC: Declare creature count\n");
+    /*Assign creature count*/
+    int creatureCount = 0;
+    for (int j = 0; j < num_creatures; j++) {
+        printf("UC: for loop\n");
+        printf("creature %d room = %d\n", j, creatures[ j ]->room);
+        if (creatures[ j ]->room == i) {
+            /*Fill current Creatures*/
+            printf("UC: Init current creatures[i]\n");
+            rooms[ i ]->currentCreatures[ creatureCount ] = (long) malloc(sizeof(long));
+            printf("UC: Assign current creatures[i]\n");
+            rooms[ i ]->currentCreatures[ creatureCount ] = j;
+            printf("room %d currentCreatures[%d] type = %d\n", i, creatureCount,
+                   (int) rooms[ i ]->currentCreatures[ creatureCount ]);
+            creatureCount++;
+        }
+        if(creatures[j]->type = 0){
+            pC->currentRoom = creatures[j]->room;
+        }
     }
-    creatureCount++;
-    }
-  }
   printf("UC: fill num of creatures\n");
   /*Fill num_Of_Creatures*/
   rooms[i]->num_Of_Creatures = creatureCount;
@@ -97,6 +100,7 @@ void init(){
     {
       fgets(input, 20, stdin);
       temp[i] = (char*) malloc(strlen(input));
+        input[strcspn(input, "\n")] = 0;
 
         strcpy(temp[i], input);
 
@@ -120,7 +124,7 @@ void init(){
     {
         printf("Init creatures[i]\n");
         /*Initialize creatures[i]*/
-        creatures[i] = (creature*) malloc(sizeof(creature*));
+        creatures[i] = (creature*) malloc(sizeof(creature));
         printf("Assing creatures[i]\n");
         creatures[i]->number = i;
         printf("assign maxcreature\n");
@@ -129,6 +133,7 @@ void init(){
 
         printf("Get input\n");
         fgets(input, 20, stdin);
+        input[strcspn(input, "\n")] = 0;
 
         int count = 0;
 
@@ -145,11 +150,13 @@ void init(){
             case 0:
             printf("First token\n");
                creatures[i]->type = atoi(token);
+                  printf("creature %d type = %d\n", i, creatures[i]->type);
               token = strtok(NULL, d);
               break;
             case 1:
             printf("Second token\n");
               creatures[i]->room = atoi(token);
+                  printf("creature %d room = %d\n", i, creatures[i]->room);
               token = strtok(NULL, d);
               break;
           }
@@ -162,10 +169,12 @@ void init(){
     for(int i = 0; i < num_rooms; i++){
       printf("Init rooms[i]\n");
       /*Initialize creatures[i]*/
-      rooms[i] = (room*) malloc(sizeof(creature*));
+        /*changed sizeof(creature*) to sizeof(room)*/
+      rooms[i] = (room*) malloc(sizeof(room));
       printf("Assign room number\n");
       /*Assign room number*/
       rooms[i]->number = i;
+        printf("room %d number = %d", i, rooms[i]->number);
 
 
       int count = 0;
@@ -183,26 +192,31 @@ void init(){
           case 0:
           printf("First token\n");
             rooms[i]->cleanliness = atoi(token);
+                printf("room %d clean = %d\n", i, rooms[i]->cleanliness);
             token = strtok(NULL, d);
             break;
           case 1:
           printf("Second token\n");
             rooms[i]->north = atoi(token);
+                printf("room %d north = %d\n", i, rooms[i]->north);
             token = strtok(NULL, d);
             break;
           case 2:
           printf("Third token\n");
             rooms[i]->south = atoi(token);
+                printf("room %d south = %d\n", i, rooms[i]->south);
             token = strtok(NULL, d);
             break;
           case 3:
           printf("Fourth token\n");
             rooms[i]->east = atoi(token);
+                printf("room %d east = %d\n", i, rooms[i]->east);
             token = strtok(NULL, d);
             break;
           case 4:
           printf("Fifth token\n");
             rooms[i]->west = atoi(token);
+                printf("room %d west = %d\n", i, rooms[i]->west);
             token = strtok(NULL, d);
             break;
         }
@@ -214,6 +228,7 @@ void init(){
       /*Fill maxRoom*/
       printf("Fills max room\n");
       rooms[i]->maxRoom = num_rooms;
+        printf("room %d maxRoom = %d\n", i, rooms[i]->maxRoom);
 
     }
 
@@ -458,13 +473,14 @@ void look(){
   printf(", contains: \n");
   printf("PC\n");
   for(int j = 0; j < rooms[currentRoom]->num_Of_Creatures; j++){
-      if(creatures[j]->type == 1){
 
-      printf("animal %d\n", creatures[j]->number);
+      if(creatures[rooms[currentRoom]->currentCreatures[j]]->type == 1){
+
+      printf("animal %lu\n", rooms[currentRoom]->currentCreatures[j]);
       }
-      else if(creatures[j]->type == 2){
+      else if(creatures[rooms[currentRoom]->currentCreatures[j]]->type == 2){
 
-        printf("human %d\n", creatures[j]->number);
+        printf("human %lu\n", rooms[currentRoom]->currentCreatures[j]);
       }
 
   }
@@ -876,9 +892,6 @@ void executeCommand(int creatureNumber, int type, int command){
 /*---------------------------------------------------------------------*/
 
 void play(){
-  /*Randomly assign currentRoom*/
-  srand((unsigned)time(NULL));
-  pC->currentRoom = rand() % (rooms[0]->maxRoom + 1 - 0) + 0;
   int currentRoom = pC->currentRoom;
 /*Create char input, temp, and number*/
   char *input = (char*) malloc(sizeof(char) * 20);
