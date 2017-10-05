@@ -42,30 +42,35 @@ void move(int direction, int currentCreature, int type);
 /*---------------------------------------------------------------------*/
 
 void updateCreatures(int num_creatures, int i) {
-    printf("UC: Init current creatures\n");
+    //printf("UC: Init current creatures\n");
     /*Initialize currentCreatures*/
     rooms[ i ]->currentCreatures = (long *) malloc(sizeof(long));
-    printf("UC: Declare creature count\n");
+   // printf("UC: Declare creature count\n");
     /*Assign creature count*/
     int creatureCount = 0;
     for (int j = 0; j < num_creatures; j++) {
-        printf("UC: for loop\n");
-        printf("creature %d room = %d\n", j, creatures[ j ]->room);
-        if (creatures[ j ]->room == i) {
-            /*Fill current Creatures*/
-            printf("UC: Init current creatures[i]\n");
-            rooms[ i ]->currentCreatures[ creatureCount ] = (long) malloc(sizeof(long));
-            printf("UC: Assign current creatures[i]\n");
-            rooms[ i ]->currentCreatures[ creatureCount ] = j;
-            printf("room %d currentCreatures[%d] type = %d\n", i, creatureCount,
-                   (int) rooms[ i ]->currentCreatures[ creatureCount ]);
-            creatureCount++;
+       // printf("UC: for loop\n");
+        //printf("creature %d room = %d\n", j, creatures[ j ]->room);
+        if (creatures[ j ]->type == 0 && pC->currentRoom != creatures[ j ]->room) {
+            creatures[j]->room = pC->currentRoom;
         }
-        if(creatures[j]->type = 0){
-            pC->currentRoom = creatures[j]->room;
+            if (creatures[ j ]->room == i) {
+                /*Fill current Creatures*/
+                //printf("UC: Init current creatures[i]\n");
+                rooms[ i ]->currentCreatures[ creatureCount ] = (long) malloc(sizeof(long));
+                //printf("UC: Assign current creatures[i]\n");
+                rooms[ i ]->currentCreatures[ creatureCount ] = j;
+                //printf("room %d currentCreatures[%d] type = %d\n", i, creatureCount,
+                   //    (int) rooms[ i ]->currentCreatures[ creatureCount ]);
+                creatureCount++;
+            }
+
+            if (creatures[ j ]->type == 0) {
+                pC->currentRoom = creatures[ j ]->room;
+            }
         }
-    }
-  printf("UC: fill num of creatures\n");
+
+  //printf("UC: fill num of creatures\n");
   /*Fill num_Of_Creatures*/
   rooms[i]->num_Of_Creatures = creatureCount;
 }
@@ -110,7 +115,7 @@ void init(){
     fgets(input, 20, stdin);
     int num_creatures = atoi(input);
 
-    printf("Init global creatures\n");
+    //printf("Init global creatures\n");
     /*Init global variable creatures*/
     creatures = (creature**) malloc(num_creatures * sizeof(creature*));
 
@@ -118,20 +123,20 @@ void init(){
     /*Get creature information and store in creatures*/
     printf("Enter creature information: \n");
 
-    printf("Creature for loop\n");
+    //printf("Creature for loop\n");
 
     for(int i = 0; i < num_creatures; i++)
     {
-        printf("Init creatures[i]\n");
+        //printf("Init creatures[i]\n");
         /*Initialize creatures[i]*/
         creatures[i] = (creature*) malloc(sizeof(creature));
-        printf("Assing creatures[i]\n");
+        //printf("Assing creatures[i]\n");
         creatures[i]->number = i;
-        printf("assign maxcreature\n");
+        //printf("assign maxcreature\n");
         /*Initialize maxCreature*/
         creatures[i]->maxCreature = num_creatures;
 
-        printf("Get input\n");
+        //printf("Get input\n");
         fgets(input, 20, stdin);
         input[strcspn(input, "\n")] = 0;
 
@@ -142,7 +147,7 @@ void init(){
 
         /*Get first token*/
         token = strtok(input,d);
-        printf("Walk through tokens\n");
+        //printf("Walk through tokens\n");
         /*Walk through the rest*/
         /*Convert token into int*/
         while( token != NULL ){
@@ -150,13 +155,16 @@ void init(){
             case 0:
             printf("First token\n");
                creatures[i]->type = atoi(token);
-                  printf("creature %d type = %d\n", i, creatures[i]->type);
+                  //printf("creature %d type = %d\n", i, creatures[i]->type);
               token = strtok(NULL, d);
               break;
             case 1:
             printf("Second token\n");
               creatures[i]->room = atoi(token);
-                  printf("creature %d room = %d\n", i, creatures[i]->room);
+              //printf("creature %d room = %d\n", i, creatures[i]->room);
+              if(creatures[i]->type == 0){
+                  pC->currentRoom = atoi(token);
+              }
               token = strtok(NULL, d);
               break;
           }
@@ -164,71 +172,71 @@ void init(){
         }
     }
 
-    printf("Store room info\n");
+    //printf("Store room info\n");
     /*Store room information in rooms*/
     for(int i = 0; i < num_rooms; i++){
-      printf("Init rooms[i]\n");
+      //printf("Init rooms[i]\n");
       /*Initialize creatures[i]*/
         /*changed sizeof(creature*) to sizeof(room)*/
       rooms[i] = (room*) malloc(sizeof(room));
-      printf("Assign room number\n");
+      //printf("Assign room number\n");
       /*Assign room number*/
       rooms[i]->number = i;
-        printf("room %d number = %d", i, rooms[i]->number);
+       // printf("room %d number = %d", i, rooms[i]->number);
 
 
       int count = 0;
 
       char *token;
       const char d[2] = " ";
-      printf("Get first token\n");
+      //printf("Get first token\n");
       /*Get first token*/
       token = strtok(temp[i],d);
-      printf("Walk through the rest\n");
+      //printf("Walk through the rest\n");
       /*Walk through the rest*/
       /*Convert token into int*/
       while( token != NULL ){
         switch(count){
           case 0:
-          printf("First token\n");
+          //printf("First token\n");
             rooms[i]->cleanliness = atoi(token);
-                printf("room %d clean = %d\n", i, rooms[i]->cleanliness);
+                //printf("room %d clean = %d\n", i, rooms[i]->cleanliness);
             token = strtok(NULL, d);
             break;
           case 1:
-          printf("Second token\n");
+          //printf("Second token\n");
             rooms[i]->north = atoi(token);
-                printf("room %d north = %d\n", i, rooms[i]->north);
+                //printf("room %d north = %d\n", i, rooms[i]->north);
             token = strtok(NULL, d);
             break;
           case 2:
-          printf("Third token\n");
+          //printf("Third token\n");
             rooms[i]->south = atoi(token);
-                printf("room %d south = %d\n", i, rooms[i]->south);
+               // printf("room %d south = %d\n", i, rooms[i]->south);
             token = strtok(NULL, d);
             break;
           case 3:
-          printf("Fourth token\n");
+          //printf("Fourth token\n");
             rooms[i]->east = atoi(token);
-                printf("room %d east = %d\n", i, rooms[i]->east);
+               // printf("room %d east = %d\n", i, rooms[i]->east);
             token = strtok(NULL, d);
             break;
           case 4:
-          printf("Fifth token\n");
+          //printf("Fifth token\n");
             rooms[i]->west = atoi(token);
-                printf("room %d west = %d\n", i, rooms[i]->west);
+                //printf("room %d west = %d\n", i, rooms[i]->west);
             token = strtok(NULL, d);
             break;
         }
         count++;
       }
-      printf("Update creatures\n");
+      //printf("Update creatures\n");
       updateCreatures(num_creatures, i);
 
       /*Fill maxRoom*/
-      printf("Fills max room\n");
+      //printf("Fills max room\n");
       rooms[i]->maxRoom = num_rooms;
-        printf("room %d maxRoom = %d\n", i, rooms[i]->maxRoom);
+        //printf("room %d maxRoom = %d\n", i, rooms[i]->maxRoom);
 
     }
 
@@ -384,7 +392,7 @@ void positiveReaction(int creatureNumber, int type, int magnitude){
       /*Increase respect by 3*/
       respect = respect + 3;
       /*Print statement*/
-      printf("%d licks your face a lot. Respect is now %d", creatureNumber, respect);
+      printf("%d licks your face a lot. Respect is now %d\n", creatureNumber, respect);
 
     }
   }
@@ -395,14 +403,14 @@ void positiveReaction(int creatureNumber, int type, int magnitude){
       /*Increase respect by 1*/
       respect ++;
       /*Print statement*/
-      printf("%d smiles. Respect is now %d", creatureNumber, respect);
+      printf("%d smiles. Respect is now %d\n", creatureNumber, respect);
     }
     /*If NPC is performing action*/
     else{
       /*Increase respect by 3*/
       respect = respect + 3;
       /*Print statement*/
-      printf("%d smiles a lot. Respect is now %d", creatureNumber, respect);
+      printf("%d smiles a lot. Respect is now %d\n", creatureNumber, respect);
     }
 
   }
@@ -420,18 +428,18 @@ void negativeReaction(int creatureNumber, int type, int magnitude){
     }
     else{
       respect = respect - 3;
-      printf("%d growls a lot. Respect is now %d", creatureNumber, respect);
+      printf("%d growls a lot. Respect is now %d\n", creatureNumber, respect);
 
     }
   }
   else{
     if(magnitude == 0){
       respect --;
-      printf("%d grumbles. Respect is now %d", creatureNumber, respect);
+      printf("%d grumbles. Respect is now %d\n", creatureNumber, respect);
     }
     else{
       respect = respect - 3;
-      printf("%d grumbles a lot. Respect is now %d", creatureNumber, respect);
+      printf("%d grumbles a lot. Respect is now %d\n", creatureNumber, respect);
     }
 
   }
@@ -457,23 +465,22 @@ void look(){
   else{
     printf("dirty, ");
   }
-  printf("neighbors ");
+  printf("neighbors");
   if(north != -1){
-    printf("%d to the north ", north);
+    printf(" %d to the north", north);
   }
   if(south != -1){
-    printf("%d to the south ", south);
+    printf(" %d to the south", south);
   }
   if(east != -1){
-    printf("%d to the east ", east);
+    printf(" %d to the east", east);
   }
   if(west != -1){
-    printf("%d to the west ", west);
+    printf(" %d to the west", west);
   }
   printf(", contains: \n");
   printf("PC\n");
   for(int j = 0; j < rooms[currentRoom]->num_Of_Creatures; j++){
-
       if(creatures[rooms[currentRoom]->currentCreatures[j]]->type == 1){
 
       printf("animal %lu\n", rooms[currentRoom]->currentCreatures[j]);
@@ -482,27 +489,25 @@ void look(){
 
         printf("human %lu\n", rooms[currentRoom]->currentCreatures[j]);
       }
-
   }
-
 }
 
 /*---------------------------------------------------------------------*/
 
 /*Increase cleanliness of room by one point*/
 void clean(int type, int creatureNumber){
-  int currentRoom = pC->currentRoom;
+    long currentRoom = pC->currentRoom;
 
   /*Increase cleanliness if room is not already clean*/
   if(rooms[currentRoom]->cleanliness != 0){
-
+    rooms[currentRoom]->cleanliness --;
   int currentCreature;
   /*If PC cleans*/
   if(type == -1){
     /*Cycle through all creatures in room*/
     for(int i = 0; i < rooms[currentRoom]->num_Of_Creatures; i++){
       /*Get creature number*/
-      currentCreature = rooms[currentRoom]->currentCreatures[i];
+      currentCreature = (int) rooms[currentRoom]->currentCreatures[i];
 
       /*If animal: positive reaction. If human: negative reaction*/
       if(creatures[currentCreature]->type == 1){
@@ -525,7 +530,7 @@ void clean(int type, int creatureNumber){
 
       /*Reactions of all other creatures in room*/
       for(int i = 0; i < rooms[currentRoom]->num_Of_Creatures; i++){
-        currentCreature = rooms[currentRoom]->currentCreatures[i];
+        currentCreature = (int) rooms[currentRoom]->currentCreatures[i];
         if(creatureNumber != i){
         if(creatures[currentCreature]->type == 1){
           positiveReaction(currentCreature, 1, 0);
@@ -545,8 +550,8 @@ void clean(int type, int creatureNumber){
 
 
         for(int i = 0; i < rooms[currentRoom]->num_Of_Creatures; i++){
-          currentCreature = rooms[currentRoom]->currentCreatures[i];
-          if(creatureNumber != i){
+          currentCreature = (int) rooms[currentRoom]->currentCreatures[i];
+          if(creatureNumber != creatures[currentCreature]->number){
           if(creatures[currentCreature]->type == 1){
             positiveReaction(currentCreature, 1, 0);
 
@@ -566,7 +571,7 @@ void clean(int type, int creatureNumber){
   if(rooms[currentRoom]->cleanliness == 0){
     /*Cycle through each creature in the room*/
     for(int j = 0; j < rooms[currentRoom]->num_Of_Creatures; j++){
-      currentCreature = rooms[currentRoom]->currentCreatures[j];
+      currentCreature = (int) rooms[currentRoom]->currentCreatures[j];
       /*If a creature is an NPC, find a neighbor and move to that location*/
       if(creatures[currentCreature]->type == 2){
 
@@ -599,16 +604,16 @@ void clean(int type, int creatureNumber){
 void dirty(int type, int creatureNumber){
   int currentRoom = pC->currentRoom;
 
-  /*Increase cleanliness if room is not already clean*/
-  if(rooms[currentRoom]->cleanliness != 0){
-
-  int currentCreature;
+  /*Increase dirtiness if room is not already dirty*/
+  if(rooms[currentRoom]->cleanliness != 2){
+        rooms[currentRoom]->cleanliness++;
+      int currentCreature;
   /*If PC cleans*/
   if(type == -1){
     /*Cycle through all creatures in room*/
     for(int i = 0; i < rooms[currentRoom]->num_Of_Creatures; i++){
       /*Get creature number*/
-      currentCreature = rooms[currentRoom]->currentCreatures[i];
+      currentCreature = (int) rooms[currentRoom]->currentCreatures[i];
 
       /*If NPC: positive reaction. If animal: negative reaction*/
       if(creatures[currentCreature]->type == 2){
@@ -631,7 +636,7 @@ void dirty(int type, int creatureNumber){
 
       /*Reactions of all other creatures in room*/
       for(int i = 0; i < rooms[currentRoom]->num_Of_Creatures; i++){
-        currentCreature = rooms[currentRoom]->currentCreatures[i];
+        currentCreature = (int) rooms[currentRoom]->currentCreatures[i];
         if(creatureNumber != i){
         if(creatures[currentCreature]->type == 2){
           positiveReaction(currentCreature, 2, 0);
@@ -651,7 +656,7 @@ void dirty(int type, int creatureNumber){
 
 
         for(int i = 0; i < rooms[currentRoom]->num_Of_Creatures; i++){
-          currentCreature = rooms[currentRoom]->currentCreatures[i];
+          currentCreature = (int) rooms[currentRoom]->currentCreatures[i];
           if(creatureNumber != i){
           if(creatures[currentCreature]->type == 2){
             positiveReaction(currentCreature, 2, 0);
@@ -672,7 +677,7 @@ void dirty(int type, int creatureNumber){
   if(rooms[currentRoom]->cleanliness == 2){
     /*Cycle through each creature in the room*/
     for(int j = 0; j < rooms[currentRoom]->num_Of_Creatures; j++){
-      currentCreature = rooms[currentRoom]->currentCreatures[j];
+      currentCreature = (int) rooms[currentRoom]->currentCreatures[j];
       /*If a creature is an animal, find a neighbor and move to that location*/
       if(creatures[currentCreature]->type == 1){
         /*Initialize neighbor*/
@@ -708,48 +713,48 @@ void move(int direction, int currentCreature, int type){
 
   if(type == -1){
     switch(direction){
-    case 0:
+    case 3:
       if(north != -1){
-        printf("You move towads the north\n");
+        printf("You leave towards the north\n");
         pC->currentRoom = north;
         break;
       }
       else{
-        printf("There is not a room there");
+        printf("There is not a room there\n");
         break;
       }
-    case 1:
+    case 4:
       if(south != -1){
-        printf("You move towads the south");
+        printf("You leave towards the south\n");
         pC->currentRoom = south;
         break;
       }
       else{
-        printf("There is not a room there");
+        printf("There is not a room there\n");
         break;
       }
-    case 2:
+    case 5:
       if(east != -1){
-        printf("You move towads the east");
+        printf("You leave towards the east\n");
         pC->currentRoom = east;
         break;
       }
       else{
-        printf("There is not a room there");
+        printf("There is not a room there\n");
         break;
       }
-    case 3:
+    case 6:
       if(west != -1){
-        printf("You move towads the west\n");
+        printf("You leave towards the west\n");
         pC-> currentRoom = west;
         break;
       }
       else{
-        printf("There is not a room there");
+        printf("There is not a room there\n");
         break;
       }
     default:
-      printf("That is not a valid direction");
+      printf("That is not a valid direction\n");
       break;
   }
   }
@@ -757,26 +762,26 @@ void move(int direction, int currentCreature, int type){
     switch(direction){
     case 0:
 
-        printf("You move towads the north\n");
+        printf("%d leaves towards the north\n", currentCreature);
         creatures[currentCreature]->room = north;
         break;
     case 1:
 
-        printf("You move towads the south");
+        printf("%d leaves towards the south\n", currentCreature);
         creatures[currentCreature]->room = south;
         break;
     case 2:
 
-        printf("You move towads the east");
+        printf("%d leaves towards the east\n", currentCreature);
         creatures[currentCreature]->room = east;
         break;
     case 3:
 
-        printf("You move towads the west\n");
+        printf("%d leaves towards the west\n", currentCreature);
         creatures[currentCreature]->room = west;
         break;
     default:
-      printf("That is not a valid direction");
+      printf("That is not a valid direction\n");
       break;
   }
  }
@@ -956,7 +961,7 @@ void play(){
       /*Convert command into number, pass to switch and execute command*/
 
       command = getCommandNumber(commandString);
-      executeCommand(creatureNumber, creatureType, command);
+      executeCommand(creatureNumber, creatureType, (int) command);
 
       /*Update creatures in currentRoom*/
       updateCreatures(creatures[0]->maxCreature, currentRoom);
@@ -965,7 +970,7 @@ void play(){
     /*If input is not about creature*/
     else{
       command = getCommandNumber(input);
-      executeCommand(pcNumber, pcType, command);
+      executeCommand(pcNumber, pcType, (int) command);
 
       updateCreatures(creatures[0]->maxCreature, currentRoom);
     }
